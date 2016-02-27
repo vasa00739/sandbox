@@ -1,0 +1,7 @@
+<?xml version='1.0' standalone='yes'?>
+<configuration>
+    <title>Тестирирование</title>
+    <database>
+        <host>localhost</host>
+    </database>
+</configuration>
