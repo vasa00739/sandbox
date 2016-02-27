@@ -2,11 +2,15 @@
 namespace lem\base;
 
 
+use lem\controller\Request;
+
 class ApplicationRegistry extends Registry
 {
     private static $_instance = null;
+    private $_request = null;
     private $_freezedir =  __DIR__."\\data";
     private $_values = array();
+    // Время последнего чтения файла
     private $_mtimes = array();
 
     private function __construct()
@@ -33,14 +37,14 @@ class ApplicationRegistry extends Registry
             clearstatcache();
             // Возвращает время последнего изменения файла
             $mtime = filemtime($path);
-            // Существует ли свойство $this->_mtimes
-            // время последнего изменения файла
+
+            // проверяем время последнего чтения файла
             if (!isset($this->_mtimes))
             {
                 $this->_mtimes = 0;
             }
-            // если время изменения файла больше свойства сремения ихменения файла
-            // то получаем данные из файла кэша
+            // если файл был изменен со временем последнего чтения
+            // то считываем его содержимое
             if ($mtime > $this->_mtimes)
             {
                 $data = file_get_contents($path);
@@ -73,5 +77,14 @@ class ApplicationRegistry extends Registry
     public function getDSN()
     {
         return self::instance()->get('dsn');
+    }
+
+    public function getRequest() {
+        $inst = self::instance();
+        if (is_null($inst->_request))
+        {
+            $inst->_request = new Request();
+        }
+        return $this->_request;
     }
 }
